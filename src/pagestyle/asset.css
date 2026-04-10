@@ -1,0 +1,14 @@
+.layout {
+  display: flex;
+}
+
+.content {
+  padding: 20px;
+  width: 70%;
+  position: relative;
+  left: 330px;
+}
+
+.search-bar {
+  margin-bottom: 10px;
+}

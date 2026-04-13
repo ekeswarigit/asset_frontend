@@ -13,10 +13,10 @@ const Layout = () => {
         <div style={{ width: "220px" }}>
           <Sidebar />
         </div>
-
+     
         {/* Page Content */}
         <div className="flex-grow-1 p-4">
-          <Outlet /> {/* 🔥 This loads pages */}
+          <Outlet /> {/* This loads pages */}
         </div>
       </div>
     </div>

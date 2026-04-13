@@ -1,26 +1,65 @@
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/style.css"
+import { loginUser } from "../services/authService";
 
-function Login() {
+const Login = () => {
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // after success
-    navigate("/dashboard");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  return(
-    <div class="container">
-  <div class="card">
-    <h2>Login</h2>
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-    <input type="email" id="email" placeholder="Enter email" />
-    <input type="password" id="password" placeholder="Enter password" />
+    try {
+      const token = await loginUser(formData);
 
-    <button onclick={handleLogin}>Login</button>
-  </div>
-</div>
-  )
-}
+      console.log("TOKEN:", token);
+
+      // ✅ store token
+      localStorage.setItem("token", token);
+
+      alert("Login Successful ✅");
+
+      navigate("/layout/dashboard");
+    } catch (error) {
+      alert("Invalid Credentials ❌");
+    }
+  };
+
+  return (
+    <div className="container d-flex justify-content-center align-items-center vh-100">
+      <form onSubmit={handleLogin} className="card p-4 w-25">
+        <h3 className="text-center mb-3">Login</h3>
+
+        <input
+          name="email"
+          className="form-control mb-3"
+          placeholder="Email"
+          onChange={handleChange}
+        />
+
+        <input
+          name="password"
+          type="password"
+          className="form-control mb-3"
+          placeholder="Password"
+          onChange={handleChange}
+        />
+
+        <button className="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
+  );
+};
 
 export default Login;

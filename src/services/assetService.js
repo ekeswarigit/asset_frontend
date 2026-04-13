@@ -1,38 +1,24 @@
-const BASE_URL = "http://localhost:8080/api/assets";
+import api from "./api";
 
-// GET all assets
+// GET
 export const getAssets = async () => {
-  const res = await fetch(BASE_URL);
-  return res.json();
+  const res = await api.get("/assets");
+  return res.data;
 };
 
-// POST (add asset)
+// POST
 export const addAsset = async (data) => {
-  const res = await fetch(BASE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  return res.json();
+  const res = await api.post("/assets", data);
+  return res.data;
 };
 
-// PUT (update asset)
+// PUT
 export const updateAsset = async (id, data) => {
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-  return res.json();
+  const res = await api.put(`/assets/${id}`, data);
+  return res.data;
 };
 
-// DELETE asset
+// DELETE
 export const deleteAsset = async (id) => {
-  await fetch(`${BASE_URL}/${id}`, {
-    method: "DELETE",
-  });
+  await api.delete(`/assets/${id}`);
 };

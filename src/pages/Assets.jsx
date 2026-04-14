@@ -1,6 +1,7 @@
 import React, { useEffect, useState,useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAssets, deleteAsset } from "../services/assetService";
+import { addAsset } from "../services/assetService";
 
 const Assets = () => {
   const navigate = useNavigate();
@@ -43,24 +44,7 @@ const Assets = () => {
      // setAssets([]);
     }
   };
-  // const fetchData = async () => {
-  //   try {
-  //     const res = await getAssets(page, 5); // ✅ pagination
 
-  //     console.log("API:", res);
-
-  //     const content = res?.data?.data.content || [];
-
-  //     // ✅ Append data (important)
-  //     setAssets((prev) => [...prev, ...content]);
-
-  //     setHasMore(!res?.data?.data.last);
-  //   } catch (error) {
-  //     console.error("Fetch Error:", error);
-  //   }
-  // };
-
-   // ✅ Infinite scroll observer (attach to last row)
   const lastRowRef = (node) => {
     if (!hasMore) return;
 
@@ -90,11 +74,66 @@ const Assets = () => {
 
   // ✅ Safe filter
   const filteredAssets = (assets || []).filter((a) =>
-    (a.assetType || "")
+    (a.assetTypeName || "")
       .toLowerCase()
       .includes(searchType.toLowerCase())
   );
 
+  const [formData, setFormData] = useState({
+    assetName: "",
+    serialNumber: "",
+    brand: "",
+    model: "",
+    purchaseDate: "",
+    warrantyExpiry: "",
+    cost: "",
+    status: "",
+    assetCondition: "",
+    notes: "",
+    typeId: "",
+    locationId: "",
+});
+
+const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
+
+const handleSubmit = async () => {
+  try {
+    const res = await addAsset(formData);
+console.log("Sending:", formData);
+    if (res?.success) {
+      alert("Asset Added ✅");
+
+      // 🔄 refresh table
+      fetchData();
+
+      // ✅ clear form
+      setFormData({
+        assetName: "",
+        assetType: "",
+        status: "",
+        assetCondition: "",
+        brand: "",
+        serialNumber: "",
+      });
+
+      //  close modal
+      const modal = document.getElementById("addAssetModal");
+      const modalInstance = window.bootstrap.Modal.getInstance(modal);
+      modalInstance.hide();
+    } else {
+      alert("Save failed ");
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Error saving ");
+  }
+};
   return (
     <div>
       <h2>Assets</h2>
@@ -102,20 +141,20 @@ const Assets = () => {
       {/* 🔹 Top controls */}
       <div className="d-flex align-items-center gap-2 mb-3">
         <button
-          className="btn btn-primary w-25"
-          onClick={() => navigate("/add-asset")}
-        >
+            className="btn btn-primary w-25 "
+            data-bs-toggle="modal"
+            data-bs-target="#addAssetModal" >
           Add Asset
         </button>
 
         <select
-          className="form-control"
+          className="form-control w-75"
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
         >
           <option value="">All Types</option>
-          <option value="IT Equipment">IT Equipment</option>
-          <option value="Office Furniture">Office Furniture</option>
+          <option value="1">IT Equipment</option>
+          <option value="2">Furniture</option>
         </select>
       </div>
 
@@ -164,6 +203,135 @@ const Assets = () => {
           )}
         </tbody>
       </table>
+  {/* add asset form */}
+<div className="modal fade" id="addAssetModal" tabIndex="-1">
+  <div className="modal-dialog">
+    <div className="modal-content">
+
+      {/* Header */}
+      <div className="modal-header">
+        <h5 className="modal-title">Add Asset</h5>
+        <button
+          type="button"
+          className="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      {/* Body */}
+      <div className="modal-body">
+
+        <input
+          className="form-control mb-2"
+          placeholder="Asset Name"
+          name="assetName"
+          value={formData.assetName}
+          onChange={handleChange}
+        />
+
+        <input
+          className="form-control mb-2"
+          placeholder="Serial Number"
+          name="serialNumber"
+          onChange={handleChange}
+        />
+        <input
+          className="form-control mb-2"
+          placeholder="Brand"
+          name="brand"
+          onChange={handleChange}
+        />
+        
+        <input
+           className="form-control mb-2"
+           name="model"
+           placeholder="Model"
+           onChange={handleChange}
+        />
+        <input
+            type="date"
+            className="form-control mb-2"
+            name="purchaseDate"
+            onChange={handleChange}
+        />
+
+        <input
+            type="date"
+            className="form-control mb-2"
+            name="warrantyExpiry"
+            onChange={handleChange}
+        />
+        <input
+            className="form-control mb-2"
+            name="cost"
+            placeholder="Cost"
+            onChange={handleChange}
+        />
+
+        <select
+          className="form-control mb-2"
+          name="typeId"
+          onChange={handleChange}
+        >
+          <option value="">Select Type</option>
+          <option value="1">IT Equipment</option>
+          <option value="2">Furniture</option>
+        </select>
+
+        <select
+          className="form-control mb-2"
+          name="status"
+          onChange={handleChange}
+        >
+          <option value="">Status</option>
+          <option value="AVAILABLE">Available</option>
+          <option value="ASSIGNED">Assigned</option>
+          <option value="RETIRED">Retired</option>
+        </select>
+
+        <select
+          className="form-control mb-2"
+          name="assetCondition"
+          onChange={handleChange}
+        >
+          <option value="">Condition</option>
+          <option value="GOOD">Good</option>
+          <option value="FAIR">Fair</option>
+          <option value="POOR">Poor</option>
+          
+        </select>
+    
+      <input
+        className="form-control mb-2"
+        name="notes"
+        placeholder="Notes"
+        onChange={handleChange}
+      />
+      <input
+        className="form-control mb-2"
+        name="locationId"
+        placeholder="Location ID"
+        onChange={handleChange}
+      />
+      </div>
+
+      {/* Footer */}
+      <div className="modal-footer">
+        <button
+          className="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+
+        <button className="btn btn-success" onClick={handleSubmit}>
+          Save
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
     </div>
   );
 };

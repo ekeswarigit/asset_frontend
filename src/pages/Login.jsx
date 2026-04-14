@@ -30,7 +30,7 @@ const Login = () => {
 
       alert("Login Successful ✅");
 
-      navigate("/layout/dashboard");
+      navigate("/dashboard");
     } catch (error) {
       alert("Invalid Credentials ❌");
     }

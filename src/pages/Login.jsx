@@ -21,12 +21,14 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const token = await loginUser(formData);
+      const res = await loginUser(formData);
 
-      console.log("TOKEN:", token);
+      const token = res?.data?.token;
+      const user = res?.data?.user;
 
       // ✅ store token
       localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       alert("Login Successful ✅");
 

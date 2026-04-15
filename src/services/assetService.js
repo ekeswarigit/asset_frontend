@@ -1,11 +1,13 @@
 import api from "./api";
 
 // GET
-export const getAssets = async () => {
-  const res = await api.get("/assets");
-  return res.data;
+// export const getAssets = async () => {
+//   const res = await api.get("/assets");
+//   return res.data;
+// };
+export const getAssets = (page, size) => {
+  return api.get(`/assets?page=${page}&size=${size}`);
 };
-
 // POST
 export const addAsset = async (data) => {
   const res = await api.post("/assets", data);

@@ -5,36 +5,36 @@ import { getAssets } from "../services/assetService";
 
 const Dashboard = () => {
   const [assets, setAssets] = useState([]);
-
+  const [totalAssets, setTotalAssets] = useState(0);
   //  Fetch from API
   useEffect(() => {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    const res = await getAssets();
+const fetchData = async () => {
+  try {
+    const res = await getAssets(0, 10); // first page
+    
+    const assetList = res?.data?.data?.content || [];
+    setAssets(assetList);
+    const totalAssets = res?.data?.data?.totalElements;// from api
+    //  correct total
+    setTotalAssets(res?.data?.data?.totalElements || 0)
 
-    console.log("DASHBOARD API:", res);
-
-    //  Extract correctly (same as Assets page)
-    const assetList =
-      res?.data?.data?.content ||
-      res?.data?.content ||
-      res?.data ||
-      [];
-
-    setAssets(Array.isArray(assetList) ? assetList : []);
-  };
+  } catch (error) {
+    console.error("Error:", error);
+  } 
+};
 
   //  Counts
-  const totalAssets = assets.length;
+ // const totalAssets = assets.length;
 
  const itEquipment = assets.filter((a) =>
-  (a.assetTypeName || "").toLowerCase().includes("it")
+  (a.assetTypeName || "").toLowerCase() === "it equipment" 
 ).length;
 
 const furniture = assets.filter((a) =>
-  (a.assetTypeName || "").toLowerCase().includes("furniture")
+  (a.assetTypeName || "").toLowerCase() === "office furniture"
 ).length;
 
   //  Recent 3 assets

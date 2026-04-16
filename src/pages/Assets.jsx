@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { getAssets, deleteAsset } from "../services/assetService";
 import { addAsset, updateAsset } from "../services/assetService";
 import { getLocations } from "../services/locationService";
+import AssetTable from "../components/AssetTable";
+
 
 const Assets = () => {
   const navigate = useNavigate();
@@ -30,7 +32,6 @@ const Assets = () => {
 
     // ✅ FIXED PATH
     const assetList = res?.data?.data?.content || [];
-
     setAssets(assetList);
 
     // ✅ FIXED totalPages
@@ -40,6 +41,7 @@ const Assets = () => {
     console.error("Error:", error);
   }
 };
+
   // const fetchData = async () => {
   //   try {
   //     const res = await getAssets(page, 5);
@@ -235,54 +237,10 @@ const fetchLocations = async () => {
           <option value="office furniture">Office Furniture</option>
         </select>
       </div>
+   {/* asset table */}
+   <AssetTable assets={filteredAssets} onDelete={handleDelete} onEdit={handleEdit} />
 
-      {/* 🔹 Table */}
-      <table className="table table-bordered table-striped">
-        <thead className="table-dark">
-          <tr>
-            <th>Name</th>
-            <th>Brand</th>
-            <th>Status</th>
-            <th>Condition</th>
-            <th>Asset Type</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {filteredAssets.length === 0 ? (
-            <tr>
-              <td colSpan="6" className="text-center">
-                No Assets Found
-              </td>
-            </tr>
-          ) : (
-            filteredAssets.map((a) => (
-              <tr key={a.assetId}>
-                <td>{a.assetName}</td>
-                <td>{a.brand}</td>
-                <td>{a.status}</td>
-                <td>{a.assetCondition}</td>
-                <td>{a.assetTypeName}</td>
-                <td>
-                  <button className="btn btn-success btn-sm me-2"
-                    onClick={() => handleEdit(a)}>
-                    Edit
-                  </button>
-
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleDelete(a.assetId)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-      <div className="d-flex justify-content-between mt-3">
+  <div className="d-flex justify-content-between mt-3">
   <button
     className="btn btn-secondary"
     disabled={page === 0}

@@ -23,12 +23,17 @@ const Login = () => {
     try {
       const res = await loginUser(formData);
 
-      const token = res?.data?.token;
-      const user = res?.data?.user;
+      console.log("LOGIN RESPONSE:", res);
 
+      const token = res;
+      //const user = res?.data?.user;
+       if (!token) {
+      alert("Token not received ❌");
+      return;
+    } 
       // ✅ store token
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      //localStorage.setItem("user", JSON.stringify(user)); 
 
       alert("Login Successful ✅");
 

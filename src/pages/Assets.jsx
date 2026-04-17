@@ -4,6 +4,8 @@ import { getAssets, deleteAsset } from "../services/assetService";
 import { addAsset, updateAsset } from "../services/assetService";
 import { getLocations } from "../services/locationService";
 import AssetTable from "../components/AssetTable";
+import { TextField, MenuItem } from "@mui/material";
+import { Button } from "@mui/material";
 
 
 const Assets = () => {
@@ -219,24 +221,23 @@ const fetchLocations = async () => {
       <h2>Assets</h2>                                                                                                                                      
 
       {/* 🔹 Top controls */}
-      <div className="d-flex align-items-center gap-2 mb-3">
-        <button
-            className="btn btn-primary w-25 "
-            data-bs-toggle="modal"
-            data-bs-target="#addAssetModal" >
+      <Box display="flex" gap={2} mb={2} alignItems="center">
+        <Button variant="contained" color="primary">
           Add Asset
-        </button>
+        </Button>
 
-        <select
-          className="form-control w-75"
+        <TextField
+          select
+          label="Asset Type"
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
+          sx={{ width: 250 }}
         >
-          <option value="">All Types</option>
-          <option value="IT equipment">IT Equipment</option>
-          <option value="office furniture">Office Furniture</option>
-        </select>
-      </div>
+          <MenuItem value="">All Types</MenuItem>
+          <MenuItem value="IT equipment">IT Equipment</MenuItem>
+          <MenuItem value="office furniture">Office Furniture</MenuItem>
+        </TextField>
+      </Box>
    {/* asset table */}
    <AssetTable assets={filteredAssets} onDelete={handleDelete} onEdit={handleEdit} />
 

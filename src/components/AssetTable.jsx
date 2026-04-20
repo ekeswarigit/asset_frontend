@@ -2,7 +2,7 @@ import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 
-const AssetTable = ({ assets=[], onDelete, onEdit }) => {
+const AssetTable = ({ assets = [], onDelete, onEdit, canManage = true }) => {
   
   const columns = [
     { field: "assetName", headerName: "Name", flex: 1 },
@@ -11,33 +11,39 @@ const AssetTable = ({ assets=[], onDelete, onEdit }) => {
     { field: "assetCondition", headerName: "Condition", flex: 1 },
     { field: "assetTypeName", headerName: "Asset Type", flex: 1 },
 
-    {
-      field: "actions",
-      headerName: "Actions",
-      flex: 1.5,
-      renderCell: (params) => (
-        <>
-          <Button
-            variant="contained"
-            color="success"
-            size="small"
-            onClick={() => onEdit(params.row)}
-            style={{ marginRight: 8 }}
-          >
-            Edit
-          </Button>
+    ...(canManage
+      ? [
+          {
+            field: "actions",
+            headerName: "Actions",
+            flex: 1.5,
+            sortable: false,
+            filterable: false,
+            renderCell: (params) => (
+              <>
+                <Button
+                  variant="contained"
+                  color="success"
+                  size="small"
+                  onClick={() => onEdit(params.row)}
+                  sx={{ mr: 1 }}
+                >
+                  Edit
+                </Button>
 
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={() => onDelete(params.row.assetId)}
-          >
-            Delete
-          </Button>
-        </>
-      ),
-    },
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  onClick={() => onDelete(params.row.assetId)}
+                >
+                  Delete
+                </Button>
+              </>
+            ),
+          },
+        ]
+      : []),
   ];
 
   // ✅ Rows (IMPORTANT FIX)

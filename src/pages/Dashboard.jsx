@@ -1,130 +1,216 @@
-//import React from 'react'
 import React, { useEffect, useState } from "react";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import { getAssets } from "../services/assetService";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import LaptopMacOutlinedIcon from "@mui/icons-material/LaptopMacOutlined";
+import ChairOutlinedIcon from "@mui/icons-material/ChairOutlined";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 
 const Dashboard = () => {
   const [assets, setAssets] = useState([]);
   const [totalAssets, setTotalAssets] = useState(0);
-  //  Fetch from API
+
+  async function fetchData() {
+    try {
+      const res = await getAssets(0, 10);
+
+      const assetList = res?.data?.data?.content || [];
+      setAssets(assetList);
+      setTotalAssets(res?.data?.data?.totalElements || 0);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  }
+
   useEffect(() => {
-    fetchData();
+    void fetchData();
   }, []);
 
-const fetchData = async () => {
-  try {
-    const res = await getAssets(0, 10); // first page
-    
-    const assetList = res?.data?.data?.content || [];
-    setAssets(assetList);
-    const totalAssets = res?.data?.data?.totalElements;// from api
-    //  correct total
-    setTotalAssets(res?.data?.data?.totalElements || 0)
+  const itEquipment = assets.filter(
+    (a) => (a.assetTypeName || "").toLowerCase() === "it equipment"
+  ).length;
 
-  } catch (error) {
-    console.error("Error:", error);
-  } 
-};
+  const furniture = assets.filter(
+    (a) => (a.assetTypeName || "").toLowerCase() === "office furniture"
+  ).length;
 
-  //  Counts
- // const totalAssets = assets.length;
+  const availableAssets = assets.filter(
+    (a) => (a.status || "").toUpperCase() === "AVAILABLE"
+  ).length;
 
- const itEquipment = assets.filter((a) =>
-  (a.assetTypeName || "").toLowerCase() === "it equipment" 
-).length;
-
-const furniture = assets.filter((a) =>
-  (a.assetTypeName || "").toLowerCase() === "office furniture"
-).length;
-
-  //  Recent 3 assets
   const recentAssets = [...assets].slice(-3).reverse();
 
+  const statCard = (title, value, gradient, icon, trendText) => (
+    <Card
+      elevation={0}
+      sx={{
+        flex: 1,
+        minWidth: 200,
+        borderRadius: 3,
+        position: "relative",
+        overflow: "hidden",
+        color: "rgba(18, 18, 24, 0.92)",
+        backgroundImage: gradient,
+        border: "1px solid rgba(255, 255, 255, 0.7)",
+        boxShadow: "0 10px 24px rgba(0,0,0,0.10)",
+        transform: "translateY(0px)",
+        transition:
+          "transform 180ms ease, box-shadow 180ms ease, filter 180ms ease",
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          inset: 0,
+          opacity: 0.35,
+          backgroundImage:
+            "radial-gradient(rgba(255,255,255,0.9) 1px, transparent 1px)",
+          backgroundSize: "11px 11px",
+          mixBlendMode: "soft-light",
+          pointerEvents: "none",
+        },
+        "&:hover": {
+          transform: "translateY(-3px)",
+          boxShadow: "0 18px 38px rgba(0,0,0,0.16)",
+          filter: "saturate(1.06)",
+        },
+      }}
+    >
+      <CardContent>
+        <Stack
+          direction="row"
+          spacing={1.5}
+          sx={{ mb: 1.25, alignItems: "center", justifyContent: "space-between" }}
+        >
+          <Stack direction="row" spacing={1.25} sx={{ alignItems: "center" }}>
+            <Box
+              sx={{
+                width: 38,
+                height: 38,
+                borderRadius: 2,
+                display: "grid",
+                placeItems: "center",
+                bgcolor: "rgba(255,255,255,0.55)",
+                border: "1px solid rgba(255,255,255,0.75)",
+                boxShadow: "0 8px 16px rgba(0,0,0,0.08)",
+              }}
+            >
+              {icon}
+            </Box>
+            <Typography variant="subtitle2" component="h5" sx={{ fontWeight: 700 }}>
+              {title}
+            </Typography>
+          </Stack>
+
+          {trendText ? (
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 700, color: "rgba(18,18,24,0.72)" }}
+            >
+              {trendText}
+            </Typography>
+          ) : null}
+        </Stack>
+
+        <Typography variant="h4" component="div" sx={{ fontWeight: 800 }}>
+          {value}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+
   return (
-    <div className="container-fluid">
-      <h2 className="mb-4">Dashboard</h2>
+    <Box sx={{ width: "100%" }}>
+      <Typography variant="h4" component="h2" gutterBottom>
+        Dashboard
+      </Typography>
 
-      {/*  Cards */}
-      <div className="row">
-        <div className="col-md-4 mb-3">
-          <div className="card text-white bg-primary p-3">
-            <h5>
-              <i className="bi bi-box-seam me-2"></i>Total Assets
-            </h5>
-            <h3>{totalAssets}</h3>
-          </div>
-        </div>
+      <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mb: 3 }}>
+        {statCard(
+          "Total Assets",
+          totalAssets,
+          "linear-gradient(135deg, rgba(168, 222, 255, 1), rgba(224, 244, 255, 1))",
+          <Inventory2OutlinedIcon sx={{ color: "rgba(30, 90, 180, 0.95)" }} />,
+          
+        )}
+        {statCard(
+          "IT Equipment",
+          itEquipment,
+          "linear-gradient(135deg, rgba(221, 195, 255, 1), rgba(242, 230, 255, 1))",
+          <LaptopMacOutlinedIcon sx={{ color: "rgba(110, 60, 190, 0.95)" }} />,
+          
+        )}
+        {statCard(
+          "Office Furniture",
+          furniture,
+          "linear-gradient(135deg, rgba(255, 236, 171, 1), rgba(255, 248, 220, 1))",
+          <ChairOutlinedIcon sx={{ color: "rgba(170, 120, 20, 0.95)" }} />,
+          
+        )}
+        {statCard(
+          "Available",
+          availableAssets,
+          "linear-gradient(135deg, rgba(255, 209, 194, 1), rgba(255, 236, 228, 1))",
+          <CheckCircleOutlineOutlinedIcon sx={{ color: "rgba(190, 70, 40, 0.95)" }} />,
+          
+        )}
+      </Stack>
 
-        <div className="col-md-4 mb-3">
-          <div className="card text-white bg-success p-3">
-            <h5>
-              <i className="bi bi-laptop me-2"></i>IT Equipment
-            </h5>
-            <h3>{itEquipment}</h3>
-          </div>
-        </div>
-
-        <div className="col-md-4 mb-3">
-          <div className="card text-white bg-warning p-3">
-            <h5>
-              <i className="bi bi-house-door me-2"></i>Office Furniture
-            </h5>
-            <h3>{furniture}</h3>
-          </div>
-        </div>
-      </div>
-
-      {/*  Recent Assets Table */}
-      <div className="card mt-4">
-        <div className="card-header">
-          <h5>Recent Assets</h5>
-        </div>
-
-        <div className="card-body p-0">
-          <table className="table mb-0">
-            <thead className="table-dark">
-              <tr>
-                <th>Name</th>
-                <th>Brand</th>
-                <th>Asset Type</th>
-                <th>Condition</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-
-            <tbody>
+      <Paper elevation={2}>
+        <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: "divider" }}>
+          <Typography variant="h6">Recent Assets</Typography>
+        </Box>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ bgcolor: "grey.200" }}>
+                <TableCell>Name</TableCell>
+                <TableCell>Brand</TableCell>
+                <TableCell>Asset Type</TableCell>
+                <TableCell>Condition</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {recentAssets.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="text-center">
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
                     No Data
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : (
                 recentAssets.map((asset) => (
-                  <tr key={asset.assetId}>
-                    <td>{asset.assetName}</td>
-                    <td>{asset.brand}</td>
-                    <td>{asset.assetTypeName}</td>
-                    <td>{asset.assetCondition}</td>
-                    <td>
-                      <span
-                        className={`badge ${
-                          asset.status === "AVAILABLE"
-                            ? "bg-success"
-                            : "bg-danger"
-                        }`}
-                      >
-                        {asset.status}
-                      </span>
-                    </td>
-                  </tr>
+                  <TableRow key={asset.assetId} hover>
+                    <TableCell>{asset.assetName}</TableCell>
+                    <TableCell>{asset.brand}</TableCell>
+                    <TableCell>{asset.assetTypeName}</TableCell>
+                    <TableCell>{asset.assetCondition}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={asset.status}
+                        size="small"
+                        color={asset.status === "AVAILABLE" ? "success" : "error"}
+                        variant="outlined"
+                      />
+                    </TableCell>
+                  </TableRow>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </Box>
   );
 };
 

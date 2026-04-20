@@ -1,25 +1,26 @@
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { Outlet } from "react-router-dom";
+import Box from "@mui/material/Box";
+import { useState } from "react";
 
 const Layout = () => {
+  const [sidebarWidth, setSidebarWidth] = useState(260);
+
   return (
-    <div>
-      {/* Navbar */}
+    <Box>
       <Navbar />
 
-      <div className="d-flex">
-        {/* Sidebar */}
-        <div style={{ width: "220px" }}>
-          <Sidebar />
-        </div>
-     
-        {/* Page Content */}
-        <div className="flex-grow-1 p-4">
-          <Outlet /> {/* This loads pages */}
-        </div>
-      </div>
-    </div>
+      <Box sx={{ display: "flex" }}>
+        <Box sx={{ width: sidebarWidth, flexShrink: 0 }}>
+          <Sidebar onWidthChange={setSidebarWidth} />
+        </Box>
+
+        <Box sx={{ flexGrow: 1, p: 4, minWidth: 0 }}>
+          <Outlet />
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

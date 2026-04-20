@@ -11,6 +11,13 @@ const PrivateRoute = ({ children }) => {
   return token ? children : <Navigate to="/" />;
 };
 
+const AdminRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  if (!token) return <Navigate to="/" />;
+  return role === "ADMIN" ? children : <Navigate to="/dashboard" replace />;
+};
+
 const App = () => {
   return (
     <Routes>
@@ -22,7 +29,14 @@ const App = () => {
        element={ <PrivateRoute> <Layout /> </PrivateRoute> }>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="assets" element={<Assets />} />
-        <Route path="add-asset" element={<AddAsset />} />
+        <Route
+          path="add-asset"
+          element={
+            <AdminRoute>
+              <AddAsset />
+            </AdminRoute>
+          }
+        />
       </Route>
     </Routes>
   );

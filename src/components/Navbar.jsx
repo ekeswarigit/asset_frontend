@@ -1,27 +1,47 @@
-import '../styles/nav.css';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
 const Navbar = () => {
-  const role = localStorage.getItem("role");    
-  return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-      <Link className="navbar-brand" to="/">
-        Asset Management
-      </Link>
+  const navigate = useNavigate();
+  const role = localStorage.getItem("role");
 
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
-  <span className="me-3 w-75">
-  👤 {role === "ADMIN" ? "Admin" : "User"}
-</span>
-      
-    </nav>
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    navigate("/", { replace: true });
+  };
+
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography
+          component={RouterLink}
+          to="/"
+          variant="h6"
+          sx={{
+            flexGrow: 1,
+            color: "inherit",
+            textDecoration: "none",
+            fontWeight: 600,
+          }}
+        >
+          Asset Management
+        </Typography>
+        <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+            👤 {role === "ADMIN" ? "Admin" : "User"}
+          </Typography>
+          <Button color="inherit" variant="outlined" onClick={handleLogout}>
+            Logout
+          </Button>
+        </Stack>
+      </Toolbar>
+    </AppBar>
   );
 };
+
 export default Navbar;

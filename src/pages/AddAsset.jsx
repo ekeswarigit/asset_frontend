@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addAsset } from "../services/assetService";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import MenuItem from "@mui/material/MenuItem";
 
-const AddAsset = ({ setAssets }) => {
-   const navigate = useNavigate();
+const AddAsset = () => {
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     assetName: "",
@@ -21,90 +27,102 @@ const AddAsset = ({ setAssets }) => {
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    await addAsset(formData);
+    try {
+      await addAsset(formData);
 
-    navigate("/assets");
-  } catch (err) {
-    console.error(err);
-  }
-};
+      navigate("/assets");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
-    <div className="container">
-      <h2>Add Asset</h2>
+    <Box sx={{ maxWidth: 900, mx: "auto" }}>
+      <Typography variant="h4" component="h2" gutterBottom>
+        Add Asset
+      </Typography>
 
-      <form onSubmit={handleSubmit} className="card p-4">
-        <div className="row">
-
-          <div className="col-md-6 mb-3">
-            <input
-              className="form-control"
-              name="assetName"
-              placeholder="Asset Name"
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="col-md-6 mb-3">
-            <input
-              className="form-control"
-              name="assetType"
-              placeholder="Asset Type"
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="col-md-6 mb-3">
-            <select className="form-control" name="status" onChange={handleChange}>
-              <option value="">Select Status</option>
-              <option value="AVAILABLE">Available</option>
-              <option value="ASSIGNED">Assigned</option>
-            </select>
-          </div>
-
-          <div className="col-md-6 mb-3">
-            <select className="form-control" name="condition" onChange={handleChange}>
-              <option value="">Select Condition</option>
-              <option value="GOOD">Good</option>
-              <option value="DAMAGED">Damaged</option>
-            </select>
-          </div>
-
-          <div className="col-md-6 mb-3">
-            <input
-              className="form-control"
-              name="brand"
-              placeholder="Brand"
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="col-md-6 mb-3">
-            <input
-              className="form-control"
-              name="serialNumber"
-              placeholder="Serial Number"
-              onChange={handleChange}
-            />
-          </div>
-
-        </div>
-
-        <button className="btn btn-success">Save</button>
-        <button
-          type="button"
-          className="btn btn-secondary ms-2"
-          onClick={() => navigate("/assets")}
+      <Paper component="form" onSubmit={handleSubmit} elevation={2} sx={{ p: 3 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gap: 2,
+          }}
         >
-          Cancel
-        </button>
-      </form>
-    </div>
+          <TextField
+            name="assetName"
+            label="Asset Name"
+            value={formData.assetName}
+            onChange={handleChange}
+            required
+            fullWidth
+          />
+
+          <TextField
+            name="assetType"
+            label="Asset Type"
+            value={formData.assetType}
+            onChange={handleChange}
+            fullWidth
+          />
+
+          <TextField
+            select
+            name="status"
+            label="Status"
+            value={formData.status}
+            onChange={handleChange}
+            fullWidth
+          >
+            <MenuItem value="">Select Status</MenuItem>
+            <MenuItem value="AVAILABLE">Available</MenuItem>
+            <MenuItem value="ASSIGNED">Assigned</MenuItem>
+          </TextField>
+
+          <TextField
+            select
+            name="condition"
+            label="Condition"
+            value={formData.condition}
+            onChange={handleChange}
+            fullWidth
+          >
+            <MenuItem value="">Select Condition</MenuItem>
+            <MenuItem value="GOOD">Good</MenuItem>
+            <MenuItem value="DAMAGED">Damaged</MenuItem>
+          </TextField>
+
+          <TextField
+            name="brand"
+            label="Brand"
+            value={formData.brand}
+            onChange={handleChange}
+            fullWidth
+          />
+
+          <TextField
+            name="serialNumber"
+            label="Serial Number"
+            value={formData.serialNumber}
+            onChange={handleChange}
+            fullWidth
+          />
+        </Box>
+
+        <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
+          <Button type="submit" variant="contained" color="success">
+            Save
+          </Button>
+          <Button type="button" variant="outlined" onClick={() => navigate("/assets")}>
+            Cancel
+          </Button>
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 

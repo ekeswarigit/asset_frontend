@@ -23,6 +23,9 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import { ColorModeContext } from "../theme/colorMode";
+import PeopleIcon from '@mui/icons-material/People';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import CasesIcon from '@mui/icons-material/Cases';
 
 const EXPANDED_WIDTH = 260;
 const COLLAPSED_WIDTH = 76;
@@ -44,8 +47,9 @@ const Sidebar = ({ onWidthChange }) => {
 
   const items = useMemo(
     () => [
-      { label: "Dashboard", to: "/dashboard", icon: <SpaceDashboardOutlinedIcon /> },
-      { label: "Assets", to: "/assets", icon: <Inventory2OutlinedIcon /> },
+      { label: "Dashboard", to: "/dashboard", icon: <DashboardIcon /> },
+      { label: "Assets", to: "/assets", icon: <CasesIcon /> },
+      { label: "User", to:"/user", icon:<PeopleIcon/> },
     ],
     []
   );

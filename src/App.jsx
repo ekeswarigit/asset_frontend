@@ -3,8 +3,9 @@ import Login from "./pages/Login";
 import Layout from "./layouts/Layout";
 import Dashboard from "./pages/Dashboard";
 import Assets from "./pages/Assets";
-import AddAsset from "./pages/AddAsset";
+import Addform from "./pages/AddForm";
 import { Routes, Route, Navigate } from "react-router-dom";
+import {User} from "./pages/User";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -29,11 +30,12 @@ const App = () => {
        element={ <PrivateRoute> <Layout /> </PrivateRoute> }>
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="assets" element={<Assets />} />
+        <Route path="user" element={<User/>}/>
         <Route
           path="add-asset"
           element={
             <AdminRoute>
-              <AddAsset />
+              <Addform />
             </AdminRoute>
           }
         />
@@ -43,11 +45,4 @@ const App = () => {
 };
 
 export default App;
-
-
-
-
-
-
-
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAssets, deleteAsset, addAsset, updateAsset } from "../services/assetService";
 import { getLocations } from "../services/locationService";
-import AssetTable from "../components/AssetTable";
+import DataTable from "../components/DataTable";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -221,7 +221,7 @@ const Assets = () => {
         </TextField>
       </Stack>
 
-      <AssetTable assets={filteredAssets} onDelete={handleDelete} onEdit={handleEdit} canManage={canManage} />
+      <dataTable assets={filteredAssets} onDelete={handleDelete} onEdit={handleEdit} canManage={canManage} />
 
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 3 }}>
         <Button variant="outlined" disabled={page === 0} onClick={() => setPage(page - 1)}>

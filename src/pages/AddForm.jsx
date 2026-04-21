@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 
-const AddAsset = () => {
+const Addform = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -126,4 +126,4 @@ const AddAsset = () => {
   );
 };
 
-export default AddAsset;
+export default Addform;
